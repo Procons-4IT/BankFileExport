@@ -1,0 +1,45 @@
+D:\Project\procons4it\PERI_Import\bin\Debug\PERI_Import.exe
+D:\Project\procons4it\PERI_Import\bin\Debug\PERI_Import.pdb
+D:\Project\procons4it\PERI_Import\bin\Debug\PERI_Import.xml
+D:\Project\procons4it\PERI_Import\bin\Debug\Microsoft.Office.Interop.Excel.dll
+D:\Project\procons4it\PERI_Import\bin\Debug\office.dll
+D:\Project\procons4it\PERI_Import\bin\Debug\Microsoft.Vbe.Interop.dll
+D:\Project\procons4it\PERI_Import\bin\Debug\Microsoft.Office.Interop.Excel.xml
+D:\Project\procons4it\PERI_Import\bin\Debug\office.xml
+D:\Project\procons4it\PERI_Import\bin\Debug\Interop.SAPbobsCOM.dll
+D:\Project\procons4it\PERI_Import\bin\Debug\Interop.SAPbouiCOM.dll
+D:\Project\procons4it\PERI_Import\obj\Debug\ResolveAssemblyReference.cache
+D:\Project\procons4it\PERI_Import\obj\Debug\Interop.SAPbobsCOM.dll
+D:\Project\procons4it\PERI_Import\obj\Debug\Interop.SAPbouiCOM.dll
+D:\Project\procons4it\PERI_Import\obj\Debug\PERI_Import.vbproj.ResolveComReference.cache
+D:\Project\procons4it\PERI_Import\obj\Debug\PERI_Import.Resources.resources
+D:\Project\procons4it\PERI_Import\obj\Debug\ResGen.read.1.tlog
+D:\Project\procons4it\PERI_Import\obj\Debug\ResGen.write.1.tlog
+D:\Project\procons4it\PERI_Import\obj\Debug\PERI_Import.exe
+D:\Project\procons4it\PERI_Import\obj\Debug\PERI_Import.xml
+D:\Project\procons4it\PERI_Import\obj\Debug\PERI_Import.pdb
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\PERI_Import.vbproj.ResolveComReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\PERI_Import.exe
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\PERI_Import.xml
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\PERI_Import.pdb
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\ResolveAssemblyReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\PERI_Import.Resources.resources
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\ResGen.read.1.tlog
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\ResGen.write.1.tlog
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\PERI_Import.exe
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\PERI_Import.pdb
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\PERI_Import.xml
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\office.dll
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\Microsoft.Vbe.Interop.dll
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\Microsoft.Office.Interop.Excel.xml
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\office.xml
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\bin\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PERI\Deliveries\20141030_PERI Import 1.0.1\PERI_Import\obj\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.vbproj.ResolveComReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.exe
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.xml
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.pdb

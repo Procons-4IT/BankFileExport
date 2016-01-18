@@ -1,0 +1,12 @@
+<Application>
+  <Menus>
+    <action type="add">
+      <Menu Checked="0" Enabled="1" FatherUID="43520" Image="" Position="13" String="Export Payroll Bank File"
+      Type="2" UniqueID="mnu_Pay_ERBF1">
+      </Menu>
+      <Menu Checked="0" Enabled="1" FatherUID="mnu_Pay_ERBF1" Image="" Position="1" String="Export Payroll Bank File"
+       Type="1" UniqueID="mnu_Pay_ERBF">
+      </Menu>
+    </action>
+  </Menus>
+</Application>

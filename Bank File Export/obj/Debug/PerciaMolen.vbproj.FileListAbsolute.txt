@@ -1,0 +1,12 @@
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PerciaMolen.vbproj.ResolveComReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.exe
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.xml
+G:\International Projects_SAP9.0\Procons-4IT\PerciaMolen\PerciaMolen\obj\Debug\PERI_Import.pdb
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\PerciaMolen.vbproj.ResolveComReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\PERI_Import.exe
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\PERI_Import.xml
+G:\International Projects_SAP9.0\Procons-4IT\Payroll\Kuwait\Payroll with NE\Payroll Phase III\AGOC_Report\PerciaMolen\obj\Debug\PERI_Import.pdb

@@ -1,0 +1,48 @@
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Insert_PERIImport]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[Insert_PERIImport]
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Z_PEIM]') AND type in (N'U'))
+DROP TABLE [dbo].[Z_PEIM]
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Z_PEIM]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[Z_PEIM](
+	[InvoiceNo] [varchar](15) NULL,
+	[CardCode] [varchar](15) NULL,
+	[CardName] [varchar](100) NULL,
+	[DocDate] [varchar](8) NULL,
+	[DueDate] [varchar](8) NULL,
+	[Project] [varchar](20) NULL,
+	[LineTotal] Decimal(18,2) NULL,
+	[DocTotal] Decimal(18,2) NULL,
+	[Line] VarChar(100) NULL,
+	[RevAcct] VarChar(100) NULL	
+) ON [PRIMARY]
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Insert_PERIImport]') AND type in (N'P', N'PC'))
+BEGIN
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [dbo].[Insert_PERIImport]
+    @sXML NTEXT    
+AS    
+BEGIN
+ 
+    SET NOCOUNT ON;
+    DECLARE @docHandle int
+	DECLARE @RowCount As Int
+	
+	Delete From [Z_PEIM]
+	
+    exec sp_xml_preparedocument @docHandle OUTPUT, @sXML
+    INSERT INTO [Z_PEIM](InvoiceNo,CardCode,CardName,DocDate,DueDate,Project,LineTotal,DocTotal,Line,RevAcct)
+    SELECT InvoiceNo,CardCode,CardName,DocDate,DueDate,Project,LineTotal,DocTotal,Line,RevAcct
+    FROM OPENXML (@docHandle, ''DocumentElement/PEIMPORT'', 2)
+    WITH (InvoiceNo VarChar(15),CardCode VarChar(15), CardName VARCHAR(100),DocDate VarChar(8),DueDate VarChar(8),Project VarChar(20),
+    LineTotal Decimal(18,2), DocTotal Decimal(18,2),Line VarChar(100),RevAcct VarChar(100)) 
+    
+	exec sp_xml_removedocument @docHandle     
+	
+	
+	SET NOCOUNT OFF;
+END' 
+END

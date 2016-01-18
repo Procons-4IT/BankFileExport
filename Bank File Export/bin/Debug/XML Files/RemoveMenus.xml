@@ -1,0 +1,8 @@
+﻿<Application>
+	<Menus>
+		<action type="remove">
+      <Menu UniqueID="mnu_Pay_ERBF"></Menu>
+      <Menu UniqueID="mnu_Pay_ERBF1"></Menu>
+			</action>
+	</Menus>
+</Application>
