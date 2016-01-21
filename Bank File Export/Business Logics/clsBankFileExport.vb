@@ -95,6 +95,7 @@ Public Class clsBankFileExport
             oCombo.ValidValues.Add("", "Both")
             oCombo.ValidValues.Add("R", "Regular")
             oCombo.ValidValues.Add("O", "Offcycle")
+            oCombo.ValidValues.Add("T", "Offcycle Transaction") '<<========================================================Edited By Houssam=============================<<
             oCombo.ExpandType = SAPbouiCOM.BoExpandType.et_DescriptionOnly
             oCombo.Select(0, SAPbouiCOM.BoSearchKey.psk_Index)
 
@@ -158,7 +159,7 @@ Public Class clsBankFileExport
 
         oCombo = aForm.Items.Item("13").Specific
         strType = oCombo.Selected.Value
-
+        Dim strTypeValue As String = strType
 
         oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         strQuery = "Select * from [@Z_PAYROLL1] where U_Z_Posted='N' and U_Z_Year=" & intYear & " and U_Z_Month=" & intMonth
@@ -173,24 +174,42 @@ Public Class clsBankFileExport
             strType = "1=1"
         ElseIf strType = "R" Then
             strType = "T0.[U_Z_OffCycle]='N'"
-        Else
+        ElseIf strType = "O" Then '<<================================================Added By Houssam============================================<<
             strType = "T0.[U_Z_OffCycle]='Y'"
         End If
+
         Dim strCurrencyCode, strCountryCode As String
         oCombo = aForm.Items.Item("17").Specific
         strCountryCode = oCombo.Selected.Value
         strCurrencyCode = oCombo.Selected.Description
 
-        If strCountryCode = "" Then
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany & " and " & strType  ' & " and T2.[BankCode]='" & strBank & "'"
+        If strTypeValue <> "T" Then
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany & " and " & strType
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany & " and " & strType & " and T2.[CountryCod]='" & strCountryCode & "'"
 
+            End If
         Else
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany & " and " & strType & " and T2.[CountryCod]='" & strCountryCode & "'"
-
+            If strCompany = "" Then
+                strCompany = " 1 = 1 "
+            Else
+                strCompany = strCompany.Replace("T0", "T3")
+            End If
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount],T3.U_Z_CompNo FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID = T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount], T3.[U_Z_CompNo]"
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  )) as U_Z_NetSalary, T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount],T3.U_Z_CompNo FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID = T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='N' and T0.U_Z_Year=" & intYear & " and T0.U_Z_Month=" & intMonth & " and " & strCompany & " and T2.[CountryCod]='" & strCountryCode & "'"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T2.[IBAN], T1.[bankAcount], T3.[U_Z_CompNo]"
+            End If
         End If
-         oRec.DoQuery(strQuery)
+
+        oRec.DoQuery(strQuery)
         If oRec.RecordCount > 0 Then
             oApplication.Utilities.Message("Payroll components are not posted for this selected year and month", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
             Return False
@@ -220,25 +239,25 @@ Public Class clsBankFileExport
         Dim oCheckbox As SAPbouiCOM.CheckBox
         oCheckbox = aForm.Items.Item("18").Specific
         If oCheckbox.Checked = True Then
-            If GenerateFile_TAB(strBank, intYear, intMonth, strCompany, strType, strCurrencyCode, dblExchangeRate) = True Then
+            If GenerateFile_TAB(strBank, intYear, intMonth, strCompany, strType, strTypeValue, strCurrencyCode, dblExchangeRate) = True Then
                 Return True
             Else
                 Return False
             End If
         Else
-            If GenerateFile(strBank, intYear, intMonth, strCompany, strType, strCurrencyCode, dblExchangeRate) = True Then
+            If GenerateFile(strBank, intYear, intMonth, strCompany, strType, strTypeValue, strCurrencyCode, dblExchangeRate) = True Then
                 Return True
             Else
                 Return False
             End If
         End If
 
-       
+
 
         Return True
     End Function
 
-    Private Function GenerateFile(ByVal aBank As String, ByVal ayear As Integer, ByVal amonth As Integer, ByVal aCompany As String, ByVal aType As String, aCurrency As String, aExchangRate As Double) As Boolean
+    Private Function GenerateFile(ByVal aBank As String, ByVal ayear As Integer, ByVal amonth As Integer, ByVal aCompany As String, ByVal aType As String, ByVal strTypeValue As String, aCurrency As String, aExchangRate As Double) As Boolean
         Dim sLogPath, strQuery As String
         Dim TempString As String
         Dim sLogFilePath As String
@@ -272,16 +291,28 @@ Public Class clsBankFileExport
         strCurrencyCode = oCombo.Selected.Description
 
         oRec.DoQuery("Select * from [@Z_PAYROLL1] where U_Z_Year=" & ayear & " and U_Z_MONTH=" & amonth & " and U_Z_POSTED='Y' order by U_Z_empID")
-        If strCountryCode = "" Then
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
-        Else
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
+        If strTypeValue <> "T" Then
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
 
+            End If
+        Else
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and T2.[CountryCod]='" & strCountryCode & "'"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
+            End If
         End If
-        ' strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-        ' strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
+
+
         oRec.DoQuery(strQuery)
         Dim intLineCount As Integer = 0
         Dim dblTotal As Double = 0
@@ -410,7 +441,7 @@ Public Class clsBankFileExport
         Return True
     End Function
 
-    Private Function GenerateFile_TAB(ByVal aBank As String, ByVal ayear As Integer, ByVal amonth As Integer, ByVal aCompany As String, ByVal aType As String, aCurrency As String, aExchangRate As Double) As Boolean
+    Private Function GenerateFile_TAB(ByVal aBank As String, ByVal ayear As Integer, ByVal amonth As Integer, ByVal aCompany As String, ByVal aType As String, ByVal strTypeValue As String, aCurrency As String, aExchangRate As Double) As Boolean
         Dim sLogPath, strQuery As String
         Dim TempString As String
         Dim sLogFilePath As String
@@ -444,14 +475,27 @@ Public Class clsBankFileExport
         strCurrencyCode = oCombo.Selected.Description
 
         oRec.DoQuery("Select * from [@Z_PAYROLL1] where U_Z_Year=" & ayear & " and U_Z_MONTH=" & amonth & " and U_Z_POSTED='Y' order by U_Z_empID")
-        If strCountryCode = "" Then
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
-        Else
-            strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
-            strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
+        If strTypeValue <> "T" Then
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
 
+            End If
+        Else
+            If strCountryCode = "" Then
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
+            Else
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and T2.[CountryCod]='" & strCountryCode & "'"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
+            End If
         End If
+
         ' strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
         ' strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
         oRec.DoQuery(strQuery)
@@ -490,7 +534,7 @@ Public Class clsBankFileExport
             End If
             '   Dim st As String = String.Format("{000000.00}", dblNetSalary) '; // "123.00"
 
-           
+
             'Body a
             TempString = "112"
             TempString = TempString & (intRow + 1).ToString("000000") '9 Char
@@ -707,7 +751,7 @@ Public Class clsBankFileExport
     Public Sub RightClickEvent(ByRef eventInfo As SAPbouiCOM.ContextMenuInfo, ByRef BubbleEvent As Boolean)
         Try
             oForm = oApplication.SBO_Application.Forms.Item(eventInfo.FormUID)
-          
+
         Catch ex As Exception
             oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
         End Try
