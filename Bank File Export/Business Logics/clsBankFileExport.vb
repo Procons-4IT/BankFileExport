@@ -279,6 +279,9 @@ Public Class clsBankFileExport
         'Header
         Dim Day As Integer = DateTime.DaysInMonth(ayear, amonth)
         TempString = "000AGOCL001" & ayear.ToString("0000") & amonth.ToString("00") & Day.ToString("00")
+        Dim temp As String = AddFreeSpace(TempString, 34)
+        TempString = temp & "X"
+
         WriteToLog(TempString, sLogFilePath)
         Dim oRec, oTemp As SAPbobsCOM.Recordset
         oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
@@ -414,9 +417,11 @@ Public Class clsBankFileExport
             TempString = AddFreeSpace(TempString, 35 - Len(strEmpName))
             TempString = TempString '& vbTab
             'h  Payroll
-            TempString = TempString '& "PAYROLL"
-            TempString = AddFreeSpace(TempString, 4)
-            TempString = TempString ' & vbTab
+            TempString = TempString & "PAYROLL"
+            'TempString = AddFreeSpace(TempString, 4)
+            'TempString = TempString ' & vbTab
+            TempString = AddFreeSpace(TempString, 132)
+            TempString = TempString & "X" ' & vbTab
             WriteToLog(TempString, sLogFilePath)
 
             intLineCount = intLineCount + 1
