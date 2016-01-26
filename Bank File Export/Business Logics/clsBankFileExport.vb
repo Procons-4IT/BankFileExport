@@ -296,22 +296,22 @@ Public Class clsBankFileExport
         oRec.DoQuery("Select * from [@Z_PAYROLL1] where U_Z_Year=" & ayear & " and U_Z_MONTH=" & amonth & " and U_Z_POSTED='Y' order by U_Z_empID")
         If strTypeValue <> "T" Then
             If strCountryCode = "" Then
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
             Else
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
 
             End If
         Else
             If strCountryCode = "" Then
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany
-                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[bankBranch],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
             Else
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and T2.[CountryCod]='" & strCountryCode & "'"
-                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[bankBranch],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
             End If
         End If
 
@@ -346,42 +346,33 @@ Public Class clsBankFileExport
                 End If
 
             Else
-                st = (Format(CDbl(strSal(0)), "000000000000000")) ' & "." & Format(CDbl(strSal(1)), "00"))
+                st = (Format(CDbl(strSal(0)), "000000000000")) & ".00"
             End If
-            '   Dim st As String = String.Format("{000000.00}", dblNetSalary) '; // "123.00"
 
             TempString = "112"
             TempString = TempString & (intRow + 1).ToString("000000") '9 Char
-            TempString = TempString '& vbTab
+
             'Body a
             Dim ststrin As String = oRec.Fields.Item("ExtEmpNo").Value
             TempString = TempString & CInt(ststrin).ToString("0000000000") '10 Char
             TempString = AddFreeSpace(TempString, 6)
-            TempString = TempString '& vbTab
 
-            'Empllyee Batch no -B
             ststrin = oRec.Fields.Item("ExtEmpNo").Value
 
             TempString = TempString & CDbl(ststrin).ToString("0000000000") '10 Char
             TempString = AddFreeSpace(TempString, 2)
-            TempString = TempString '& vbTab
-            ' MsgBox(TempString.Length)
-            'SwiftCode C
+
             Dim IBN As String = oRec.Fields.Item("SwiftNum").Value.ToString & "XXX" & oRec.Fields.Item("IBAN").Value
             If IBN.Length < 35 Then
                 IBN = AddFreeSpace(IBN, 35 - Len(IBN))
             End If
 
-            ' TempString = TempString & oRec.Fields.Item("SwiftNum").Value.ToString & "XXX" & oRec.Fields.Item("IBAN").Value
             TempString = TempString & IBN
             TempString = AddFreeSpace(TempString, 45 - Len(IBN))
             TempString = TempString '& vbTab
 
-
-            '   MsgBox(TempString.Length)
             'Net Salary D
             Dim strSalary As String = dblNetSalary
-            ' strSalary = (dblNetSalary.ToString("0000000000000.00"))
 
             TempString = TempString & st  '.ToString("000000000000.00") '15 Char
             TempString = TempString '& vbTab
@@ -389,43 +380,54 @@ Public Class clsBankFileExport
             otest1 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
             otest1.DoQuery("Select * from DSC1 where Account='" & aBank & "'")
 
-            Dim strKJOBankAccount = aBank ' "3140500009942"
+            Dim strKJOBankAccount = aBank
             strKJOBankAccount = AddFreeSpace(strKJOBankAccount, 13 - Len(strKJOBankAccount))
             TempString = TempString & strLocalCurrency & strKJOBankAccount
             TempString = AddFreeSpace(TempString, 22)
-            TempString = TempString '& vbTab
-            '  MsgBox(TempString.Length)
-            'E Employee City of Residency
-            Dim strCityofRes As String = oRec.Fields.Item("homeCity").Value '"KHAFJI"
-            strCityofRes = AddFreeSpace(strCityofRes, 20 - Len(strCityofRes))
-            TempString = TempString & strCityofRes
-            ' TempString = AddFreeSpace(TempString, 20)
-            TempString = TempString '& vbTab
-            '  MsgBox((TempString.Length))
-            'F
 
-            Dim strCityofResPotalCode As String = oRec.Fields.Item("homeZip").Value
-            '  MsgBox(strCityofResPotalCode.Length)
+            'Dim strCityofRes As String = oRec.Fields.Item("bankBranch").Value'<<======================Houssam Saghir
+            Dim strCityofRes As String = "ALKHAFJI"
+
+            If (strCityofRes.Length > 20) Then
+                strCityofRes = strCityofRes.Substring(0, 20)
+            End If
+
+            strCityofRes = AddFreeSpace(strCityofRes, 20 - Len(strCityofRes))
+
+            'Added By Houssam
+            'Dim sb As StringBuilder = New StringBuilder(TempString)
+            'If (sb.Length < 136) Then
+            '    sb.Append(" ", 136 - sb.Length)
+            'End If
+
+            'sb.Insert(135, strCityofRes)
+            'TempString = sb.ToString()
+            'End Of Houssam Adds
+
+            TempString = TempString & strCityofRes
+
+            'Dim strCityofResPotalCode As String = oRec.Fields.Item("homeZip").Value'<<======================Commented By Houssam
+            Dim strCityofResPotalCode As String = "31971"
+
             strCityofResPotalCode = AddFreeSpace(strCityofResPotalCode, 9 - Len(strCityofResPotalCode)) '5Char
             TempString = TempString & strCityofResPotalCode
-            ' TempString = AddFreeSpace(TempString, 4)
-            TempString = TempString '& vbTab
-            '  MsgBox((TempString.Length))
-            'g Employee Name
+
             Dim strEmpName As String = oRec.Fields.Item("U_Z_EmpName").Value
+            strEmpName = strEmpName.Replace("'", " ").Replace("/", " ").Replace("\", " ").Replace("-", " ")
+            If (strEmpName.Length > 35) Then
+                strEmpName = strEmpName.Substring(0, 35)
+            End If
+
             TempString = TempString & strEmpName
             TempString = AddFreeSpace(TempString, 35 - Len(strEmpName))
             TempString = TempString '& vbTab
             'h  Payroll
             TempString = TempString & "PAYROLL"
-            'TempString = AddFreeSpace(TempString, 4)
-            'TempString = TempString ' & vbTab
             TempString = AddFreeSpace(TempString, 132)
             TempString = TempString & "X" ' & vbTab
             WriteToLog(TempString, sLogFilePath)
 
             intLineCount = intLineCount + 1
-            '  dblTotal = dblTotal + oRec.Fields.Item("U_Z_NetSalary").Value
             oRec.MoveNext()
         Next
         'Footer
@@ -436,11 +438,10 @@ Public Class clsBankFileExport
         If strSal1.Length > 1 Then
             st1 = (Format(CDbl(strSal1(0)), "000000000000000") & "." & Format(CDbl(strSal1(1)), "00"))
         Else
-            st1 = (Format(CDbl(strSal1(0)), "000000000000000000")) '& "." & Format(CDbl(strSal1(1)), "00"))
+            st1 = (Format(CDbl(strSal1(0)), "000000000000000000"))
         End If
 
         TempString = "999" & st1 & intLineCount.ToString("000000")
-        'MsgBox(TempString.Length)
         WriteToLog(TempString, sLogFilePath)
         ShellExecute(sLogFilePath)
         Return True
@@ -482,22 +483,22 @@ Public Class clsBankFileExport
         oRec.DoQuery("Select * from [@Z_PAYROLL1] where U_Z_Year=" & ayear & " and U_Z_MONTH=" & amonth & " and U_Z_POSTED='Y' order by U_Z_empID")
         If strTypeValue <> "T" Then
             If strCountryCode = "" Then
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " order by U_Z_empID"
             Else
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName], T0.[U_Z_NetSalary],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN', T1.[bankAcount],T1.[ExtEmpNo],T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAYROLL1]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID Left Outer JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode]"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and " & aType & " and T2.CountryCod='" & strCountryCode & "' order by U_Z_empID"
 
             End If
         Else
             If strCountryCode = "" Then
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany
-                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[bankBranch],T1.[homeZip],T1.[ExtEmpNo]  order by U_Z_empID"
             Else
-                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[homeCity],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
+                strQuery = "SELECT T0.[U_Z_empid], T0.[U_Z_EmpName],SUM((CASE WHEN T0.[U_Z_Type] = 'D' THEN -T0.U_Z_Amount ELSE T0.U_Z_Amount END  ))  as U_Z_NetSalary,T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN] 'IBAN',T1.[ExtEmpNo], T1.[bankAcount],T3.U_Z_CompNo,T1.[bankBranch],T1.[homeZip] FROM [dbo].[@Z_PAY_TRANS]  T0 inner Join OHEM T1 on T1.empID=T0.U_Z_empID left Outer  JOIN ODSC T2 ON T1.[bankCode] = T2.[BankCode] INNER JOIN [dbo].[OHEM] T3 ON T3.empID = T0.U_Z_EMPID"
                 strQuery = strQuery & " where T0.U_Z_Posted='Y' and T0.U_Z_Year=" & ayear & " and T0.U_Z_Month=" & amonth & " and " & aCompany & " and T2.[CountryCod]='" & strCountryCode & "'"
-                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[homeCity],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
+                strQuery = strQuery & " group by T0.[U_Z_empid], T0.[U_Z_EmpName],T2.[BankCode], T2.[BankName], T2.[SwiftNum], T1.[U_Z_IBAN], T1.[bankAcount],T3.[U_Z_CompNo],T1.[bankBranch],T1.[homeZip],T1.[ExtEmpNo]  order by T0.[U_Z_empid]"
             End If
         End If
 
@@ -535,7 +536,7 @@ Public Class clsBankFileExport
                 End If
 
             Else
-                st = (Format(CDbl(strSal(0)), "000000000000000")) ' & "." & Format(CDbl(strSal(1)), "00"))
+                st = (Format(CDbl(strSal(0)), "000000000000")) & ".00"
             End If
             '   Dim st As String = String.Format("{000000.00}", dblNetSalary) '; // "123.00"
 
@@ -560,32 +561,44 @@ Public Class clsBankFileExport
             If IBN.Length < 35 Then
                 IBN = AddFreeSpace(IBN, 35 - Len(IBN))
             End If
-            ' TempString = TempString & oRec.Fields.Item("SwiftNum").Value.ToString & "XXX" & oRec.Fields.Item("IBAN").Value
+
             TempString = TempString & IBN
             TempString = AddFreeSpace(TempString, 45 - Len(IBN))
             TempString = TempString & vbTab
             '  MsgBox(TempString.Length)
             'Net Salary D
             Dim strSalary As String = dblNetSalary
-            ' strSalary = (dblNetSalary.ToString("0000000000000.00"))
-            TempString = TempString & st  '.ToString("000000000000.00") '15 Char
-            TempString = TempString '& vbTab
+            TempString = TempString & st
             otest1.DoQuery("Select * from DSC1 where Account='" & aBank & "'")
-            Dim strKJOBankAccount = aBank ' "3140500009942"
+            Dim strKJOBankAccount = aBank
             strKJOBankAccount = AddFreeSpace(strKJOBankAccount, 13 - Len(strKJOBankAccount))
             TempString = TempString & strLocalCurrency & strKJOBankAccount
             TempString = AddFreeSpace(TempString, 22)
             TempString = TempString & vbTab
 
-            'E Employee City of Residency
-            Dim strCityofRes As String = oRec.Fields.Item("homeCity").Value '"KHAFJI"
+            'Dim strCityofRes As String = oRec.Fields.Item("bankBranch").Value '"KHAFJI"'<<===================Commented By Houssam
+            Dim strCityofRes As String = "ALKHAFJI"
+
+            If (strCityofRes.Length > 20) Then
+                strCityofRes = strCityofRes.Substring(0, 20)
+            End If
             strCityofRes = AddFreeSpace(strCityofRes, 20 - Len(strCityofRes))
+
+            'Added By Houssam
+            'Dim sb As StringBuilder = New StringBuilder(TempString)
+            'If (sb.Length < 136) Then
+            '    sb.Append(" ", 136 - sb.Length)
+            'End If
+
+            'sb.Insert(135, strCityofRes)
+            'TempString = sb.ToString()
+            'End of Houssam Adds
+
             TempString = TempString & strCityofRes
             TempString = TempString & vbTab
 
-            'F
-
-            Dim strCityofResPotalCode As String = oRec.Fields.Item("homeZip").Value
+            'Dim strCityofResPotalCode As String = oRec.Fields.Item("homeZip").Value '<<=====================Commented By Houssam
+            Dim strCityofResPotalCode As String = "31971"
 
             strCityofResPotalCode = AddFreeSpace(strCityofResPotalCode, 9 - Len(strCityofResPotalCode)) '5Char
             TempString = TempString & strCityofResPotalCode
@@ -593,10 +606,14 @@ Public Class clsBankFileExport
 
             'g Employee Name
             Dim strEmpName As String = oRec.Fields.Item("U_Z_EmpName").Value
+            strEmpName = strEmpName.Replace("'", " ").Replace("/", " ").Replace("\", " ").Replace("-", " ")
+            If (strEmpName.Length > 35) Then
+                strEmpName = strEmpName.Substring(0, 35)
+            End If
+
             TempString = TempString & strEmpName
             TempString = AddFreeSpace(TempString, 35 - Len(strEmpName))
             TempString = TempString & vbTab
-            'h  Payroll
             TempString = TempString '& "PAYROLL"
             TempString = AddFreeSpace(TempString, 4)
             TempString = TempString '& vbTab
